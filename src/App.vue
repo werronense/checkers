@@ -108,13 +108,14 @@ function squareClass(p: Pos): string {
   const isHighlighted = highlightKeys.value.has(posKey(p))
   const isSelected = selectedFrom.value && samePos(selectedFrom.value, p)
 
-  const base = dark ? 'bg-emerald-700' : 'bg-emerald-100'
-  const hover = terminal.value.over || gameState.value.turn !== 'HUMAN' ? '' : 'hover:brightness-110'
+  const base = dark ? 'bg-black' : 'bg-white'
+  const hover =
+    terminal.value.over || gameState.value.turn !== 'HUMAN' ? '' : 'hover:brightness-110'
   const cursor =
     terminal.value.over || gameState.value.turn !== 'HUMAN' ? 'cursor-default' : 'cursor-pointer'
 
   const ring = isHighlighted
-    ? 'ring-4 ring-yellow-300 ring-inset'
+    ? 'ring-4 ring-violet-600 ring-inset'
     : isSelected
       ? 'ring-4 ring-sky-300 ring-inset'
       : ''
@@ -123,8 +124,12 @@ function squareClass(p: Pos): string {
 }
 
 function pieceClass(piece: Piece): string {
-  const color = piece.player === 'HUMAN' ? 'bg-rose-600' : 'bg-slate-800'
-  const outline = piece.king ? 'ring-2 ring-amber-300' : 'ring-1 ring-black/20'
+  const color = piece.player === 'HUMAN' ? 'bg-pink-600' : 'bg-white'
+  const outline = piece.king
+    ? piece.player === 'HUMAN'
+      ? 'ring-2 ring-white'
+      : 'ring-2 ring-pink-600'
+    : 'ring-1 ring-black/20'
   return `h-10 w-10 sm:h-12 sm:w-12 rounded-full ${color} ${outline} shadow-md flex items-center justify-center`
 }
 
@@ -135,7 +140,8 @@ const bannerText = computed(() => {
     return 'Game over.'
   }
   if (aiThinking.value) return 'Computer is thinking…'
-  if (gameState.value.turn === 'HUMAN') return forcedCapture.value ? 'Your turn (capture required).' : 'Your turn.'
+  if (gameState.value.turn === 'HUMAN')
+    return forcedCapture.value ? 'Your turn (capture required).' : 'Your turn.'
   return 'Computer’s turn.'
 })
 </script>
@@ -147,8 +153,8 @@ const bannerText = computed(() => {
         <div>
           <h1 class="text-2xl font-semibold tracking-tight">Checkers</h1>
           <p class="text-sm text-zinc-300">
-            You are <span class="font-medium text-rose-300">Red</span>. Computer is
-            <span class="font-medium text-slate-200">Black</span>.
+            You are <span class="font-medium text-pink-400">Pink</span>. Computer is
+            <span class="font-medium text-zinc-200">White</span>.
           </p>
         </div>
 
@@ -164,7 +170,7 @@ const bannerText = computed(() => {
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div class="text-sm font-medium">{{ bannerText }}</div>
           <div class="text-xs text-zinc-300">
-            Red: <span class="font-semibold text-zinc-100">{{ counts.human }}</span> • Black:
+            Pink: <span class="font-semibold text-zinc-100">{{ counts.human }}</span> • White:
             <span class="font-semibold text-zinc-100">{{ counts.ai }}</span>
           </div>
         </div>
@@ -172,7 +178,9 @@ const bannerText = computed(() => {
 
       <div class="mt-6">
         <div class="mx-auto w-full max-w-[520px]">
-          <div class="grid aspect-square grid-cols-8 grid-rows-8 overflow-hidden rounded-2xl ring-1 ring-zinc-800">
+          <div
+            class="grid aspect-square grid-cols-8 grid-rows-8 overflow-hidden rounded-none ring-1 ring-zinc-800"
+          >
             <button
               v-for="p in squares"
               :key="posKey(p)"
@@ -183,14 +191,23 @@ const bannerText = computed(() => {
               @click="onSquareClick(p)"
             >
               <div v-if="pieceAt(p)" :class="pieceClass(pieceAt(p)!)">
-                <span v-if="pieceAt(p)!.king" class="text-xs font-bold text-amber-200">K</span>
+                <svg
+                  v-if="pieceAt(p)!.king"
+                  class="h-5 w-5 sm:h-6 sm:w-6 shrink-0"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                  :class="pieceAt(p)!.player === 'HUMAN' ? 'text-white' : 'text-pink-600'"
+                >
+                  <path d="M12 2l2 6h4l-3 4 1 6-4-3-4 3 1-6-3-4h4l2-6z" />
+                </svg>
               </div>
             </button>
           </div>
         </div>
 
         <div class="mx-auto mt-4 max-w-[520px] text-xs text-zinc-400">
-          Click a red piece to see legal moves. Click a highlighted square to move.
+          Click a pink piece to see legal moves. Click a highlighted square to move.
         </div>
       </div>
     </div>

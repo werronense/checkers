@@ -75,7 +75,7 @@ function minimax(state: GameState, depth: number, alpha: number, beta: number): 
   }
 }
 
-export function chooseAiMove(state: GameState, depth: number = 4): Move {
+export function chooseAiMove(state: GameState, depth: number = 2): Move {
   const moves = orderMoves(getLegalMoves(state))
   if (moves.length === 0) {
     // Should be handled by terminal detection in UI, but keep this safe.
@@ -106,4 +106,3 @@ export function quickCounts(state: GameState): { human: number; ai: number } {
   // Handy for UI display.
   return countPieces(state.board)
 }
-

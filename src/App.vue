@@ -172,7 +172,7 @@ const bannerText = computed(() => {
 
       <div class="mt-6">
         <div class="mx-auto w-full max-w-[520px]">
-          <div class="grid aspect-square grid-cols-8 overflow-hidden rounded-2xl ring-1 ring-zinc-800">
+          <div class="grid aspect-square grid-cols-8 grid-rows-8 overflow-hidden rounded-2xl ring-1 ring-zinc-800">
             <button
               v-for="p in squares"
               :key="posKey(p)"
